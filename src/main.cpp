@@ -34,7 +34,7 @@ void motorWrite(uint8_t chan, float duty)
   duty = duty < MOTOR_PWM_DUTY_CYCLE_MINIMUM ? MOTOR_PWM_DUTY_CYCLE_MINIMUM : duty;
   duty = duty > MOTOR_PWM_DUTY_CYCLE_MAXIMUM ? MOTOR_PWM_DUTY_CYCLE_MAXIMUM : duty;
   /* scale value from 0-100 to 0-255 */
-  duty = duty * (2^PWMResolution / 100);
+  duty = duty * pow(2, PWMResolution) / 100;
   uint32_t duty_int = (uint32_t) duty;
   printf("Set motor channel %u to %u\r\n", chan, duty_int);
   ledcWrite(chan, duty_int);
@@ -54,7 +54,7 @@ void callback(char *topic, byte *payload, unsigned int length)
 
   // we assume that the topic is /cm/bipede/<motor_number>
   uint8_t channel = topic[11]-0x30; // TODO: use atoi-like function
-  float duty = (float) atoi((char*)payload);
+  float duty = atof((char*)payload);
   printf("Set motor channel %u to %.2f%%\r\n", channel, duty);
   motorWrite(channel, duty);
   payload = (byte *) "   ";
