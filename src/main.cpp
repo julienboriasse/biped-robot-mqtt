@@ -146,10 +146,6 @@ void connectToNetwork()
   Serial.println("Connected to network");
 }
 
-
-
-
-
 void setup()
 {
   Serial.begin(115200);
