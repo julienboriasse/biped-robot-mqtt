@@ -40,7 +40,7 @@ void motorWrite(uint8_t chan, float duty)
   ledcWrite(chan, duty_int);
 }
 
-void callback(char *topic, byte *payload, unsigned int length)
+void MQTTCallback(char *topic, byte *payload, unsigned int length)
 {
   /* For debug purpose */
   Serial.print("Message arrived [");
@@ -60,7 +60,7 @@ void callback(char *topic, byte *payload, unsigned int length)
   payload = (byte *) "   ";
 }
 
-void MQTTreconnect()
+void MQTTReconnect()
 {
   // Loop until we're reconnected
   while (!MQTTClient.connected())
@@ -83,7 +83,7 @@ void MQTTreconnect()
   }
 }
 
-String translateEncryptionType(wifi_auth_mode_t encryptionType)
+String translateWiFiEncryptionType(wifi_auth_mode_t encryptionType)
 {
 
   switch (encryptionType)
@@ -106,7 +106,7 @@ String translateEncryptionType(wifi_auth_mode_t encryptionType)
   return "UNKNOWN";
 }
 
-void scanNetworks()
+void scanWiFiNetworks()
 {
 
   int numberOfNetworks = WiFi.scanNetworks();
@@ -127,13 +127,13 @@ void scanNetworks()
     Serial.println(WiFi.BSSIDstr(i));
 
     Serial.print("Encryption type: ");
-    String encryptionTypeDescription = translateEncryptionType(WiFi.encryptionType(i));
+    String encryptionTypeDescription = translateWiFiEncryptionType(WiFi.encryptionType(i));
     Serial.println(encryptionTypeDescription);
     Serial.println("-----------------------");
   }
 }
 
-void connectToNetwork()
+void connectToWiFiNetwork()
 {
   WiFi.begin(ssid, password);
 
@@ -151,15 +151,15 @@ void setup()
   Serial.begin(115200);
 
   /* Connect to WiFi */
-  scanNetworks();
-  connectToNetwork();
+  scanWiFiNetworks();
+  connectToWiFiNetwork();
 
   Serial.println(WiFi.macAddress());
   Serial.println(WiFi.localIP());
 
   /* Setup MQTT broker information */
   MQTTClient.setServer(MQTTServer, 1883);
-  MQTTClient.setCallback(callback);
+  MQTTClient.setCallback(MQTTCallback);
 
   /* Initialize PWM channel and pin for each motor */
   for (int PWMChannel = 0; PWMChannel < NUMBER_OF_MOTORS; PWMChannel++)
@@ -183,7 +183,7 @@ void loop()
   while (1) {
     /* Connect to MQTT broker if not connected yet */
     if (!MQTTClient.connected()) {
-      MQTTreconnect();
+      MQTTReconnect();
     }
 
     MQTTClient.loop();
