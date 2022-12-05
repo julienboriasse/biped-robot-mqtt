@@ -15,3 +15,13 @@ Edit `include/secrets.h` with your WiFi router SSID and password.
 ## MQTT credentials
 
 Edit `src/main.cpp` with your MQTT broker URL and port. 
+
+# References
+
+## Remote control
+
+TODO: Add reference to the git repository containing the remote control made of 6 potentiometers
+
+## PCB
+
+TODO: Add reference to the git repository containing the pcb design and output files
